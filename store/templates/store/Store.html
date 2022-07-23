@@ -10,7 +10,7 @@
         <div class="box-element product">
             <h6>{{prod.name}}</h6>
             <hr>
-            <button class="btn btn-outline-secondary add-btn">Add to cart</button>
+            <button class="btn btn-outline-secondary add-btn update-cart" data-product="{{prod.id}}" data-action="add">Add to cart</button>
             <a href="#" class="btn btn-outline-success">View</a>
             <h4 style="float:right;">Rs. {{prod.price|floatformat:2}}</h4>
         </div>
