@@ -6,7 +6,7 @@ from .models import *
 
 def store(request):
     products = Product.objects.all()
-    context = {'products': products}
+    context = {'products': products, 'shipping': False}
     print(context)
     return render(request, 'store/Store.html', context)
 
@@ -21,7 +21,7 @@ def cart(request):
         order = {'get_cart_total': 0, 'get_cart_items': 0}
         cartItems = order['get_cart_items']
 
-    context = {'items': items, 'order': order, 'cartItems': cartItems}
+    context = {'items': items, 'order': order, 'cartItems': cartItems, 'shipping': False}
     return render(request, 'store/Cart.html', context)
 
 def checkout(request):
@@ -32,7 +32,7 @@ def checkout(request):
     else:
         items = []
         order = {'get_cart_total': 0, 'get_cart_items': 0}
-    context = {'items': items, 'order': order}
+    context = {'items': items, 'order': order, 'shipping': False}
     return render(request, 'store/Checkout.html', context)
 
 def updateItem(request):
