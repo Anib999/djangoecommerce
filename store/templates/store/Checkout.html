@@ -79,6 +79,8 @@
 	let userName = `{{request.user}}`
 	
 	let shipping = `{{order.shipping}}`
+	let total = `{{order.get_cart_total}}`
+
 	if (shipping == 'False') {
 		document.getElementById('shipping-info').innerHTML = ''
 	}
@@ -107,6 +109,48 @@
 
 	function makePayment() {
 		console.log('payment is made');
+		let userFormData = {
+			'name': null,
+			'email': null,
+			'total': total
+		}
+
+		let shippingData = {
+			"address": null,
+			"city": null,
+			"state": null,
+			"zipcode": null,
+			"country": null,
+		}
+
+		if(shipping != 'False'){
+			shippingData.address = form.address.value
+			shippingData.city = form.city.value
+			shippingData.state = form.state.value
+			shippingData.zipcode = form.zipcode.value
+			shippingData.country = form.country.value
+		}
+
+		if(userName == 'AnonymousUser'){
+			userFormData.name = form.name.value
+			userFormData.email = form.email.value
+		}
+
+		var url = '/process_order/'
+		fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': csrftoken
+			},
+			body: JSON.stringify({'form': userFormData, 'shipping': shippingData})
+		})
+		.then(res => res.json())
+		.then(res => {
+			console.log(res)
+			alert('Complete')
+			window.location.href = `{% url 'store' %}`
+		})
 	}
 </script>
 {% endblock content %}
