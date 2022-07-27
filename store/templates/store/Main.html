@@ -46,6 +46,30 @@
         }
         const csrftoken = getToken('csrftoken');
 
+        function getCookie(name) {
+            var cookieArr = document.cookie.split(';')
+            for (let i = 0; i < cookieArr.length; i++) {
+                const cookiePair = cookieArr[i].split('=');
+
+                if(name == cookiePair[0].trim()){
+                    return decodeURIComponent(cookiePair[i])
+                }
+                
+            }
+
+            return null
+        }
+
+        var cart = JSON.parse(getCookie('cart'))
+
+        if(cart == undefined){
+            cart = {}
+            console.log('cart created');
+            document.cookie = `cookie=${JSON.stringify(cart)};domain=;path=/;`
+        }
+
+        console.log(cart);
+
     </script>
     <script src="{% static 'js/cart.js' %}"></script>
 </body>
