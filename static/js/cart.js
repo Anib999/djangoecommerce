@@ -52,5 +52,5 @@ function addCookieItem(productId, action){
 
   console.log(cart);
   document.cookie = `cookie=${JSON.stringify(cart)};domain=;path=/;`
-  location.reload()
+  // location.reload()
 }
