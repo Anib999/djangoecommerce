@@ -96,4 +96,24 @@ def processOrder(request):
     else:
         print('user not loged')
 
+        print(request.COOKIES)
+
+        name = data['form']['name']
+        email = data['form']['email']
+
+        cookieData = cookieCart(request)
+        items = cookieData['items']
+
+        customer, created = Customer.objects.get_or_create(
+            email=email
+        )
+
+        customer.name = name
+        customer.save()
+
+        order = Order.objects.create(
+            customer=customer,
+            complete=False
+        )
+
     return JsonResponse('Form submitted', safe=False)
