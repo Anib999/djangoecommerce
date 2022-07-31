@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import json
 from .models import *
-from .utils import cookieCart, cartData
+from .utils import cookieCart, cartData, guestOrder
 import datetime
 # Create your views here.
 
@@ -75,45 +75,26 @@ def processOrder(request):
         customer = request.user.customer
         order, created = Order.objects.get_or_create(
             customer=customer, complete=False)
-        total = float(data['form']['total'])
-        order.transaction_id = transaction_id
-
-        if total == order.get_cart_total:
-            order.complete = True
-        order.save()
-
-        if order.shipping == True:
-            ShippingAddress.objects.create(
-                customer=customer,
-                order=order,
-                address=data['shipping']['address'],
-                city=data['shipping']['city'],
-                state=data['shipping']['state'],
-                zipcode=data['shipping']['zipcode'],
-                country=data['shipping']['country']
-            )
 
     else:
-        print('user not loged')
+        customer, order = guestOrder(request, data)
 
-        print(request.COOKIES)
+    total = float(data['form']['total'])
+    order.transaction_id = transaction_id
 
-        name = data['form']['name']
-        email = data['form']['email']
+    if total == order.get_cart_total:
+        order.complete = True
+    order.save()
 
-        cookieData = cookieCart(request)
-        items = cookieData['items']
-
-        customer, created = Customer.objects.get_or_create(
-            email=email
-        )
-
-        customer.name = name
-        customer.save()
-
-        order = Order.objects.create(
+    if order.shipping == True:
+        ShippingAddress.objects.create(
             customer=customer,
-            complete=False
+            order=order,
+            address=data['shipping']['address'],
+            city=data['shipping']['city'],
+            state=data['shipping']['state'],
+            zipcode=data['shipping']['zipcode'],
+            country=data['shipping']['country']
         )
 
     return JsonResponse('Form submitted', safe=False)
